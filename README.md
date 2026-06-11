@@ -125,3 +125,5 @@ npm run tauri build
 - Three.js, GLB
 - Manifest V3 브라우저 확장
 - 로컬 HTTP 브리지 `127.0.0.1:43119`
+
+## 난동구리 작명: 기시미
