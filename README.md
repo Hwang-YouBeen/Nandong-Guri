@@ -34,7 +34,7 @@ Safari와 Firefox, 모바일 앱은 현재 지원하지 않습니다.
 [최신 GitHub Release](https://github.com/Hwang-YouBeen/Nandong-Guri/releases/latest)에서 운영체제용 파일을 내려받습니다.
 
 - macOS: `Nandong-Guri-*-macOS.dmg` (Intel·Apple Silicon 공용)
-- Windows: `Nandong-Guri-*-Windows.msi` 또는 `Nandong-Guri-*-Windows-setup.exe`
+- Windows: `Nandong-Guri-*-Windows-setup.exe`
 - 브라우저 확장: `nandong-guri-browser-extension-*.zip`
 
 현재 개발 버전을 직접 빌드하려면 아래의 [개발 및 빌드](#개발-및-빌드)를 참고하세요.

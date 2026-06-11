@@ -7,10 +7,9 @@
 태그 배포가 성공하면 Release에 다음 파일이 첨부됩니다.
 
 ```text
-Nandong-Guri-v0.1.2-macOS.dmg
-Nandong-Guri-v0.1.2-Windows.msi
-Nandong-Guri-v0.1.2-Windows-setup.exe
-nandong-guri-browser-extension-v0.1.2.zip
+Nandong-Guri-v0.1.3-macOS.dmg
+Nandong-Guri-v0.1.3-Windows-setup.exe
+nandong-guri-browser-extension-v0.1.3.zip
 ```
 
 macOS와 Windows 앱은 서로 호환되지 않으므로 사용자는 자신의 운영체제에 맞는 설치 파일을 받아야 합니다. 브라우저 확장 ZIP은 두 운영체제에서 공통으로 사용합니다.
@@ -20,7 +19,7 @@ macOS와 Windows 앱은 서로 호환되지 않으므로 사용자는 자신의 
 `.github/workflows/release.yml`은 `v*` 태그가 GitHub에 푸시될 때 실행됩니다.
 
 1. macOS 러너가 Intel과 Apple Silicon을 함께 지원하는 Universal `.dmg`를 빌드합니다.
-2. Windows 러너가 `.msi`와 NSIS 설치용 `.exe`를 빌드합니다.
+2. 안정적인 Windows 2022 러너가 NSIS 설치용 `.exe`를 빌드합니다.
 3. Linux 러너가 `browser-extension` 폴더를 ZIP으로 압축합니다.
 4. 세 작업이 모두 성공하면 GitHub Release를 공개하고 파일을 첨부합니다.
 
@@ -50,10 +49,10 @@ node --check browser-extension/background.js
 
 ```bash
 git add .
-git commit -m "Release v0.1.2"
+git commit -m "Release v0.1.3"
 git push origin main
-git tag v0.1.2
-git push origin v0.1.2
+git tag v0.1.3
+git push origin v0.1.3
 ```
 
 GitHub 저장소의 `Actions` 탭에서 `Build and release` 작업을 확인합니다. 모든 작업이 성공하면 `Releases`에 설치 파일이 나타납니다.
@@ -75,6 +74,6 @@ Blender, FBX, STL, 보존 ZIP과 2D 참고 이미지는 앱 실행과 빌드에 
 
 - `npm ci` 실패: `package-lock.json`이 최신인지 확인합니다.
 - Rust 빌드 실패: `Cargo.lock`과 Tauri 의존성을 확인합니다.
-- Windows 번들 실패: NSIS 또는 MSI 로그를 확인합니다.
+- Windows 번들 실패: NSIS 로그와 Windows 러너 버전을 확인합니다.
 - Release 생성 실패: 워크플로의 `contents: write` 권한과 저장소 Actions 권한을 확인합니다.
 - 태그만 보이고 파일이 없음: GitHub `Actions`의 실패 작업을 열어 로그를 확인합니다.

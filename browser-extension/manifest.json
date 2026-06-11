@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "난동구리 브라우저 감지기",
   "description": "ChatGPT와 Gemini의 답변 완료를 난동구리 데스크톱 앱에 전달합니다.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "icons": {
     "16": "icons/icon-16.png",
     "48": "icons/icon-48.png",
