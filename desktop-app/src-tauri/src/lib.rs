@@ -214,9 +214,13 @@ fn ensure_overlay(app: &AppHandle) -> tauri::Result<tauri::WebviewWindow> {
     .shadow(false)
     .always_on_top(true)
     .skip_taskbar(true)
+    .focusable(false)
+    .focused(false)
     .visible(false)
     .resizable(false)
     .build()?;
+    window.set_always_on_top(true)?;
+    window.set_focusable(false)?;
     window.set_ignore_cursor_events(true)?;
     Ok(window)
 }
@@ -255,12 +259,24 @@ fn start_overlay_hit_testing(app: AppHandle) {
 fn position_overlay(app: &AppHandle, monitor: &tauri::Monitor) -> Result<(), String> {
     let window = ensure_overlay(app).map_err(|error| error.to_string())?;
     window
+        .set_always_on_top(true)
+        .map_err(|error| error.to_string())?;
+    window
+        .set_focusable(false)
+        .map_err(|error| error.to_string())?;
+    window
         .set_position(*monitor.position())
         .map_err(|error| error.to_string())?;
     window
         .set_size(*monitor.size())
         .map_err(|error| error.to_string())?;
-    window.show().map_err(|error| error.to_string())
+    window.show().map_err(|error| error.to_string())?;
+    window
+        .set_always_on_top(true)
+        .map_err(|error| error.to_string())?;
+    window
+        .set_focusable(false)
+        .map_err(|error| error.to_string())
 }
 
 fn show_raccoon(app: &AppHandle, event: CompletionEvent) -> Result<(), String> {

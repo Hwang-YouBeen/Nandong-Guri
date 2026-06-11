@@ -7,9 +7,9 @@
 태그 배포가 성공하면 Release에 다음 파일이 첨부됩니다.
 
 ```text
-Nandong-Guri-v0.1.3-macOS.dmg
-Nandong-Guri-v0.1.3-Windows-setup.exe
-nandong-guri-browser-extension-v0.1.3.zip
+Nandong-Guri-v0.1.4-macOS.dmg
+Nandong-Guri-v0.1.4-Windows-setup.exe
+nandong-guri-browser-extension-v0.1.4.zip
 ```
 
 macOS와 Windows 앱은 서로 호환되지 않으므로 사용자는 자신의 운영체제에 맞는 설치 파일을 받아야 합니다. 브라우저 확장 ZIP은 두 운영체제에서 공통으로 사용합니다.
@@ -49,10 +49,10 @@ node --check browser-extension/background.js
 
 ```bash
 git add .
-git commit -m "Release v0.1.3"
+git commit -m "Release v0.1.4"
 git push origin main
-git tag v0.1.3
-git push origin v0.1.3
+git tag v0.1.4
+git push origin v0.1.4
 ```
 
 GitHub 저장소의 `Actions` 탭에서 `Build and release` 작업을 확인합니다. 모든 작업이 성공하면 `Releases`에 설치 파일이 나타납니다.
