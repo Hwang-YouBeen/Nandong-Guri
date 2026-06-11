@@ -1,0 +1,23 @@
+.DS_Store
+
+# Desktop app generated files
+desktop-app/node_modules/
+desktop-app/dist/
+desktop-app/src-tauri/target/
+desktop-app/*.log
+
+# Large production sources kept locally, not required to build the app
+archives/
+3d-character-animation/
+3d-printing-keyring/
+2d-character-references/
+brand-assets/generated-sources/
+
+# Editor files
+.idea/
+desktop-app/.vscode/*
+!desktop-app/.vscode/extensions.json
+
+# Temporary files
+*.tmp
+*.swp

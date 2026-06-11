@@ -1,0 +1,110 @@
+name: Build and release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    name: Build macOS
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop-app/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+      - name: Install dependencies
+        working-directory: desktop-app
+        run: npm ci
+      - name: Build universal DMG
+        working-directory: desktop-app
+        run: npm run tauri build -- --target universal-apple-darwin --bundles dmg
+      - name: Collect DMG
+        run: |
+          mkdir release-assets
+          cp desktop-app/src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg \
+            "release-assets/Nandong-Guri-${GITHUB_REF_NAME}-macOS.dmg"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: macos-release
+          path: release-assets/*
+          if-no-files-found: error
+
+  windows:
+    name: Build Windows
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: desktop-app/package-lock.json
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies
+        working-directory: desktop-app
+        run: npm ci
+      - name: Build MSI and NSIS
+        working-directory: desktop-app
+        run: npm run tauri build -- --bundles msi,nsis
+      - name: Collect installers
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release-assets | Out-Null
+          $msi = Get-ChildItem "desktop-app/src-tauri/target/release/bundle/msi/*.msi" | Select-Object -First 1
+          $exe = Get-ChildItem "desktop-app/src-tauri/target/release/bundle/nsis/*-setup.exe" | Select-Object -First 1
+          Copy-Item $msi.FullName "release-assets/Nandong-Guri-$env:GITHUB_REF_NAME-Windows.msi"
+          Copy-Item $exe.FullName "release-assets/Nandong-Guri-$env:GITHUB_REF_NAME-Windows-setup.exe"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: release-assets/*
+          if-no-files-found: error
+
+  extension:
+    name: Package browser extension
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check extension scripts
+        run: |
+          node --check browser-extension/content.js
+          node --check browser-extension/background.js
+      - name: Package extension
+        run: |
+          cd browser-extension
+          zip -r "../nandong-guri-browser-extension-${GITHUB_REF_NAME}.zip" .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-extension
+          path: nandong-guri-browser-extension-*.zip
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [macos, windows, extension]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "난동구리 $GITHUB_REF_NAME" \
+            --generate-notes
